@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+crawl4ai
+tiktoken
+pydantic
