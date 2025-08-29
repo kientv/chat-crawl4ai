@@ -1,4 +1,15 @@
-FROM mcr.microsoft.com/playwright/python:v1.54.0-jammy
+# Đổi base image cho nhẹ hơn, các phần còn lại giữ nguyên
+FROM python:3.12-slim
+
+# Cài libs tối thiểu để Chromium (Playwright) chạy được
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates curl wget \
+    libglib2.0-0 libnss3 libnspr4 \
+    libatk1.0-0 libatk-bridge2.0-0 \
+    libcups2 libdrm2 libxkbcommon0 \
+    libgtk-3-0 libgbm1 libasound2 \
+    fonts-liberation \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -7,7 +18,8 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Install only Chromium browser (not all browsers)
-RUN playwright install chromium
+RUN pip install --no-cache-dir playwright && \
+    playwright install chromium
 
 # Setup tiktoken cache for offline usage
 RUN mkdir -p /opt/tiktoken_cache
